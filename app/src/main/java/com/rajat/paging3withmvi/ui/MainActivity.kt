@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.RecyclerViewItemEvent {
         val layoutManager = GridLayoutManager(this, 3)
         setGridLayoutSpanSize(manager = layoutManager)
         adapter = MoviesAdapter(MoviesAdapter.UserComparator, this)
-        binding.postRecyclerView.adapter = adapter.withLoadStateFooter(HeaderFooterAdapter{adapter.retry()})
-        binding.postRecyclerView.layoutManager = layoutManager
+        binding.movieRecyclerView.adapter = adapter.withLoadStateFooter(HeaderFooterAdapter{adapter.retry()})
+        binding.movieRecyclerView.layoutManager = layoutManager
     }
 
 

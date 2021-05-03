@@ -11,29 +11,34 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rajat.paging3withmvi.R
+import com.rajat.paging3withmvi.databinding.ActivityMainBinding
+import com.rajat.paging3withmvi.databinding.LoadingItemBinding
 
-class HeaderFooterAdapter(  private val retry: () -> Unit): LoadStateAdapter<HeaderFooterAdapter.HeaderFooterViewHolder>() {
+class HeaderFooterAdapter(private val retry: () -> Unit): LoadStateAdapter<HeaderFooterAdapter.HeaderFooterViewHolder>() {
 
-    class HeaderFooterViewHolder(view: View, retry: () -> Unit,) : RecyclerView.ViewHolder(view){
-        val progressBar: ProgressBar = view.findViewById<ProgressBar>(R.id.progressBar)
-        val retryButton: Button = view.findViewById<Button>(R.id.retryBtn)
-        val errorMsg: TextView = view.findViewById<TextView>(R.id.errorTv)
+   class HeaderFooterViewHolder(private val binding: LoadingItemBinding,retry: () -> Unit,) : RecyclerView.ViewHolder(binding.root){
 
         init {
-            retryButton.setOnClickListener {
+            binding.retryBtn.setOnClickListener {
                 retry()
             }
         }
+
+      fun bind(loadState: LoadState){
+          binding.progressBar.isVisible = loadState is LoadState.Loading
+          binding.retryBtn.isVisible = loadState is LoadState.Error
+          binding.errorTv.isVisible = loadState is LoadState.Error
+      }
     }
 
     override fun onBindViewHolder(holder: HeaderFooterViewHolder, loadState: LoadState) {
-        holder.progressBar.isVisible = loadState is LoadState.Loading
-        holder.retryButton.isVisible = loadState is LoadState.Error
-        holder.errorMsg.isVisible = loadState is LoadState.Error
-
+        holder.bind(loadState)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): HeaderFooterViewHolder {
-        return HeaderFooterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.loading_item,parent,false),retry)
+        val binding = LoadingItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return HeaderFooterViewHolder(binding,retry)
     }
+
+
 }

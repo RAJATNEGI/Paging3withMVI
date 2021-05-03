@@ -10,7 +10,6 @@ import com.rajat.paging3withmvi.*
 import com.rajat.paging3withmvi.ui.MoviesAdapter.Companion.MOVIE_ITEM
 import com.rajat.paging3withmvi.databinding.ActivityMainBinding
 import com.rajat.paging3withmvi.intents.MainSideEffect
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 

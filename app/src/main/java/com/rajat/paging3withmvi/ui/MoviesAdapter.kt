@@ -2,18 +2,16 @@ package com.rajat.paging3withmvi.ui
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.rajat.paging3withmvi.R
+import com.rajat.paging3withmvi.databinding.MovieItemBinding
 import com.rajat.paging3withmvi.tmdb.model.Movie
 
 class MoviesAdapter(diffCallback: DiffUtil.ItemCallback<Movie>, private val context: Context) :
-    PagingDataAdapter<Movie, MoviesAdapter.MoviesViewHolder>(diffCallback) {
+        PagingDataAdapter<Movie, MoviesAdapter.MoviesViewHolder>(diffCallback) {
     companion object {
         private const val TAG = "PostAdapter"
         const val MOVIE_ITEM = 1
@@ -23,8 +21,8 @@ class MoviesAdapter(diffCallback: DiffUtil.ItemCallback<Movie>, private val cont
     var recyclerViewItemEvent: RecyclerViewItemEvent = context as MainActivity
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.movie_item, parent, false)
-        return MoviesViewHolder(view)
+        val binding = MovieItemBinding.inflate(LayoutInflater.from(context), parent, false)
+        return MoviesViewHolder(binding)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -36,12 +34,9 @@ class MoviesAdapter(diffCallback: DiffUtil.ItemCallback<Movie>, private val cont
     }
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        val movie = getItem(position)
+        val movie: Movie? = getItem(position)
+        holder.bind(movie)
 
-        Glide.with(context)
-            .load(imageUrlGenerator(movie?.posterPath.toString()))
-            .centerCrop()
-            .into(holder.image)
     }
 
     private fun imageUrlGenerator(imagePath: String): String {
@@ -62,14 +57,20 @@ class MoviesAdapter(diffCallback: DiffUtil.ItemCallback<Movie>, private val cont
     }
 
 
-    inner class MoviesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image: ImageView = view.findViewById<ImageView>(R.id.movie_image)
+    inner class MoviesViewHolder(private val binding: MovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            image.setOnLongClickListener {
+            binding.movieImage.setOnLongClickListener {
                 recyclerViewItemEvent.onLongClickMovieItem(getItem(bindingAdapterPosition)?.originalTitle.toString())
                 true
             }
+        }
+
+        fun bind(movie: Movie?) {
+            Glide.with(context)
+                    .load(imageUrlGenerator(movie?.posterPath.toString()))
+                    .centerCrop()
+                    .into(binding.movieImage)
         }
     }
 
